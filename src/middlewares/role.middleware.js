@@ -13,7 +13,7 @@ const RoleMiddleware = (role) => {
         "User is not found in role middleware"
       );
     }
-    if (!role.includes(user.role)) {
+    if (!user.positions.includes(role)) {
       throw new HttpException(
         StatusCodes.FORBIDDEN,
         "You do not have access to perform this action"

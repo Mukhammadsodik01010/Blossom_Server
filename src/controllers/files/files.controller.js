@@ -6,8 +6,7 @@ const { uploadFIleS3, deleteFileS3 } = require("../../utils/s3");
 const FileSchema = require("../../models/files/files.model");
 
 class UploadController {
-    static UplloadFile = async (req, res) => {
-      
+  static UplloadFile = async (req, res) => {
     const uploadedFile = req.file;
     if (!uploadedFile) {
       throw new HttpException(StatusCodes.CONFLICT, "File not provided");
@@ -30,6 +29,7 @@ class UploadController {
 
     res.status(StatusCodes.CREATED).json({
       success: true,
+      message: "File uploaded successfully",
       file_path,
     });
   };
@@ -45,13 +45,13 @@ class UploadController {
         null,
         { lean: true }
       ).map((file) => file.file_path);
-        
-        for (const file of files) {
-            await deleteFileS3(file)
-            await FileSchema.deleteOne({file_path:file})
-        }
 
-        return files.length.toString();
+      for (const file of files) {
+        await deleteFileS3(file);
+        await FileSchema.deleteOne({ file_path: file });
+      }
+
+      return files.length.toString();
     } catch (error) {
       console.error(error);
       return "Not";

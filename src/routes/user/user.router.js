@@ -60,6 +60,7 @@ User_Router.post(
 );
 
 User_Router.get("/get-me", AuthMiddleware, UserController.GetMe);
+User_Router.post("/edit-me", AuthMiddleware, UserController.EditMe);
 
 User_Router.get(
   "/user-by-id/:id",

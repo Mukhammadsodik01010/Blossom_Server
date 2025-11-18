@@ -40,13 +40,13 @@ class UserController {
       email,
       password: hashedPassword,
       role: RoleNames.SUPERADMIN,
-      email_status: EmailStatus.VERIFIED,
+      email_verified: true,
       positions: Object.values(PositionNames),
     });
 
     return res
       .status(StatusCodes.OK)
-      .json({ success: true, message: "Super Created Successfully" });
+      .json({ success: true, message: "Super Admin Created Successfully" });
   };
 
   static SignUpAdmin = async (req, res) => {
@@ -73,7 +73,7 @@ class UserController {
       email,
       password: hashedPassword,
       role: RoleNames.ADMIN,
-      positions: [PositionNames.UPLOAD_File],
+      positions: [PositionNames.UPLOAD_File, PositionNames.GET_DASHBOARD_DATA],
     });
 
     return res
@@ -144,7 +144,42 @@ class UserController {
     if (!user) {
       throw new HttpException(StatusCodes.NOT_FOUND, "User not found");
     }
-    return res.status(StatusCodes.OK).json({ data: user });
+    return res.status(StatusCodes.OK).json({ success: true, data: user });
+  };
+
+  static EditMe = async (req, res) => {
+    const { avatar, firstName, lastName, email } = req.body;
+    const user = await UserModel.findById(req.user.user_id);
+    if (!user) {
+      throw new HttpException(StatusCodes.NOT_FOUND, "User not found");
+    }
+
+    if (avatar && avatar !== undefined && avatar !== "") user.avatar = avatar;
+    if (firstName && firstName !== undefined && firstName !== "")
+      user.firstName = firstName;
+    if (lastName && lastName !== undefined && lastName !== "")
+      user.lastName = lastName;
+    if (email && email !== undefined && email !== "") {
+      if (!user.email_verified) {
+        throw new HttpException(
+          StatusCodes.CONFLICT,
+          "Please verify your email first"
+        );
+      }
+
+      const availableuser = await UserModel.findOne({ email });
+      if (availableuser) {
+        throw new HttpException(StatusCodes.CONFLICT, "Email already exists");
+      }
+
+      user.email = email;
+    }
+
+    await user.save();
+
+    return res
+      .status(StatusCodes.OK)
+      .json({ success: true, message: "Changes saved successfully" });
   };
 
   static ForgetPassword = async (req, res) => {
@@ -161,7 +196,10 @@ class UserController {
     const verification_id = Math.floor(10000 + Math.random() * 90000);
 
     const Salt = await genSalt(10);
-    const hashedVerificationCode = await hash(verification_code.toString(), Salt);
+    const hashedVerificationCode = await hash(
+      verification_code.toString(),
+      Salt
+    );
 
     await sendMail(
       email,
@@ -209,13 +247,24 @@ class UserController {
       );
     }
 
-    const isMatch = await compare(verification_code.toString(), user.verification_code);
+    const isMatch = await compare(
+      verification_code.toString(),
+      user.verification_code
+    );
     if (!isMatch) {
       throw new HttpException(StatusCodes.CONFLICT, "Wrong verification code");
     }
 
     user.is_verified = true;
     await user.save();
+
+    const userOne = await UserModel.findOne({ email });
+    if (!userOne) {
+      throw new HttpException(StatusCodes.CONFLICT, "User not Found");
+    }
+
+    userOne.email_verified = true;
+    await userOne.save();
 
     const ResetToken = jwt.sign({ email: email }, JWT_SECRET, {
       expiresIn: "3m",
@@ -317,12 +366,14 @@ class UserController {
       search.trim() !== ""
         ? {
             role: RoleNames.ADMIN,
+            _id: { $ne: req.user.user_id },
             $or: [
-              { name: { $regex: search, $options: "i" } },
+              { firstName: { $regex: search, $options: "i" } },
+              { lastName: { $regex: search, $options: "i" } },
               { email: { $regex: search, $options: "i" } },
             ],
           }
-        : { role: RoleNames.ADMIN };
+        : { role: RoleNames.ADMIN, _id: { $ne: req.user.user_id } };
 
     const admins = await UserModel.find(query)
       .select("-password -session_token")
@@ -359,8 +410,10 @@ class UserController {
 
     if (firstName) user.firstName = firstName;
     if (lastName) user.lastName = lastName;
-    if (email) user.email = email;
-    user.email_status = EmailStatus.UNVERIFIED;
+    if (email) {
+      user.email = email;
+      user.email_verified = false;
+    }
 
     await user.save();
 
@@ -372,7 +425,7 @@ class UserController {
   static DeleteUserByID = async (req, res) => {
     const { id } = req.params;
 
-    const user = await UserModel.findByIdAndDelete(id)
+    const user = await UserModel.findByIdAndDelete(id);
     if (!user) {
       throw new HttpException(StatusCodes.CONFLICT, "User not found");
     }

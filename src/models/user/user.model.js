@@ -3,7 +3,6 @@ const {
   CollectionNames,
   RoleNames,
   StatusNames,
-  EmailStatus,
   PositionNames,
 } = require("../../utils/constants");
 
@@ -16,10 +15,9 @@ const dacumentSchema = new Schema(
     reg_key: { type: String },
     avatar: { type: String },
     session_token: { type: String, select: false },
-    email_status: {
-      type: String,
-      enum: [EmailStatus.VERIFIED, EmailStatus.UNVERIFIED],
-      default: EmailStatus.UNVERIFIED,
+    email_verified: {
+      type: Boolean,
+      default: false,
     },
     role: {
       type: String,
