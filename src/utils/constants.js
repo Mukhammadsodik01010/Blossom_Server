@@ -2,32 +2,106 @@ class CollectionNames {
   static USER = "user";
   static SAVE_FILE = "save_file";
   static RESET_PASSWORD = "reser_password";
+  static PRODUCTS = "products";
 }
 
 class RoleNames {
-  static SUPERADMIN = "superadmin"
+  static SUPERADMIN = "superadmin";
   static ADMIN = "admin";
   static USER = "user";
 }
 
 class StatusNames {
-  static ACTIVE = "active"
-  static BLOCKED = "blocked"
+  static ACTIVE = "active";
+  static BLOCKED = "blocked";
 }
 
 class EmailStatus {
-  static VERIFIED = "verified"
-  static UNVERIFIED = "unverified"
+  static VERIFIED = "verified";
+  static UNVERIFIED = "unverified";
 }
- 
+
 class PositionNames {
-  static GET_DASHBOARD_DATA = "getDashboardData"
-  static EDIT_USER_DATA = "editUserData"
-  static DELETE_USER_DATA = "deleteUserData"
+  static GET_DASHBOARD_DATA = "getDashboardData";
+  static EDIT_USER_DATA = "editUserData";
+  static DELETE_USER_DATA = "deleteUserData";
   static UPLOAD_File = "uploadFile";
   static ADD_PRODUCT = "addProduct";
   static EDIT_PRODUCT = "editProduct";
   static DELETE_PRODUCT = "deleteProduct";
+}
+
+class SizeNames {
+  static XSSize = "XS";
+  static XSSize = "XS";
+  static MSize = "M";
+  static LSize = "L";
+  static XLSSize = "XL";
+  static XXLSSize = "XXL";
+}
+class ColorNames {
+  static WHITE = "white";
+  static BLACK = "black";
+  static PINK = "pink";
+  static BLUE = "blue";
+  static VIOLET = "violet";
+  static YELLOW = "yellow";
+  static GREEN = "green";
+  static RED = "red";
+  static ORANGE = "orange";
+  static BROWN = "brown";
+  static GRAY = "gray";
+  static BEIGE = "beige";
+  static MULTICOLOR = "multicolor";
+}
+class TargetNames {
+  static MEN = "men";
+  static Women = "women";
+  static BOYS = "boys";
+  static GIRLS = "girls";
+  static UNISEX = "unisex";
+}
+
+class CategoriesNames {
+  static HAT = "hat"
+  static CAP = "cap"
+  static SCARF = "scarf"
+  static GLOVES = "gloves"
+  static JUMPER = "jumper"
+  static SUITS = "suits"
+  static TSHIRT = "tshirt"
+  static SHIRT = "shirt"
+  static JEANS = "jeans"
+  static TROUSERS = "trousers"
+  static DRESS = "dress"
+  static SKIRT = "skirt"
+  static SHOES = "shoes"
+  static SNEAKERS = "sneakers"
+  static COAT = "coat"
+  static JACKETS = "jackets"
+  static HOODIE = "hoodie"
+  static SWEATER = "sweater"
+  static SHORTS = "shorts"
+  static SWIMWEAR = "swimwear"
+  static PANTS = "pants"
+}
+
+class BrendNames {
+  static NIKE = "nike"
+  static ADIDAS = "adidas"
+  static PUMA = "puma"
+  static REEBOK = "reebok"
+  static UNIQLO = "uniqlo"
+  static ZARA = "zara"
+  static H_AND_M = "H&M"
+  static GUCCI = "gucci"
+  static LOUIS_VUITTON = "louis_vuitton"
+  static CHANEL = "chanel"
+  static DIOR = "dior"
+  static FILA = "fila"
+  static GEOX = "geox"
+  static LACOSTE = "lacoste"
+  static SUPREME = "supreme"
 }
 
 module.exports = {
@@ -36,4 +110,9 @@ module.exports = {
   StatusNames,
   EmailStatus,
   PositionNames,
+  SizeNames,
+  ColorNames,
+  TargetNames,
+  CategoriesNames,
+  BrendNames,
 };
