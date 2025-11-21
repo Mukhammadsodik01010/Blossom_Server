@@ -26,10 +26,24 @@ Products_Router.get(
 );
 
 Products_Router.delete(
-  "/delete-product/:product_id",
+  "/delete-product/:id",
   AuthMiddleware,
   RoleMiddleware(PositionNames.DELETE_PRODUCT),
   ProductsController.DeleteProductById
+);
+
+Products_Router.post(
+  "/edit-product-by-id/:id",
+  AuthMiddleware,
+  RoleMiddleware(PositionNames.EDIT_PRODUCT),
+  ProductsController.EditProductById
+);
+
+Products_Router.patch(
+  "/edit-product-status/:id",
+  AuthMiddleware,
+  RoleMiddleware(PositionNames.EDIT_PRODUCT),
+  ProductsController.EditProductStatus
 );
 
 module.exports = Products_Router;

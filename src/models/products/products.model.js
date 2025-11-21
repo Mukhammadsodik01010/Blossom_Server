@@ -5,13 +5,19 @@ const {
   SizeNames,
   ColorNames,
   TargetNames,
+  BrendNames,
+  CategoriesNames,
 } = require("../../utils/constants");
 
 const dacumentSchema = new Schema(
   {
     name: { type: String, required: true },
-    brend: { type: String, required: true },
-    category: { type: String, required: true },
+    brend: { type: String, required: true, enum: Object.values(BrendNames) },
+    category: {
+      type: String,
+      required: true,
+      enum: Object.values(CategoriesNames),
+    },
     image: { type: String, required: true },
     cost: { type: String, required: true },
     compound: { type: String, required: true },
@@ -20,16 +26,9 @@ const dacumentSchema = new Schema(
     target: {
       type: String,
       required: true,
-      enum: [
-        TargetNames.BOYS,
-        TargetNames.GIRLS,
-        TargetNames.MEN,
-          TargetNames.Women,
-        TargetNames.UNISEX,
-      ],
+      enum: Object.values(TargetNames),
     },
     sale: { type: String },
-
     status: {
       type: String,
       enun: [StatusNames.ACTIVE, StatusNames.BLOCKED],

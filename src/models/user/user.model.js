@@ -31,6 +31,11 @@ const dacumentSchema = new Schema(
       default: StatusNames.ACTIVE,
     },
     positions: [{ type: String, enum: Object.values(PositionNames) }],
+    products: [{
+      type: Schema.ObjectId,
+      ref: CollectionNames.PRODUCTS,
+      required: true,
+    }],
   },
   {
     versionKey: false,

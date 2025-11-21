@@ -57,32 +57,28 @@ class ColorNames {
 class TargetNames {
   static MEN = "men";
   static Women = "women";
-  static BOYS = "boys";
-  static GIRLS = "girls";
-  static UNISEX = "unisex";
+  static BOYS = "boy";
+  static GIRLS = "girl";
 }
 
 class CategoriesNames {
-  static HAT = "hat"
-  static CAP = "cap"
-  static SCARF = "scarf"
-  static GLOVES = "gloves"
-  static JUMPER = "jumper"
+  static HAT = "hats" 
+  static CAP = "caps" 
+  static SCARF = "scarfs" 
+  static GLOVES = "gloves" 
   static SUITS = "suits"
-  static TSHIRT = "tshirt"
-  static SHIRT = "shirt"
-  static JEANS = "jeans"
-  static TROUSERS = "trousers"
-  static DRESS = "dress"
-  static SKIRT = "skirt"
-  static SHOES = "shoes"
+  static TSHIRT = "t-shirts" 
+  static SHIRT = "shirts"
+  static JEANS = "jeans" 
+  static DRESS = "dresses" 
+  static SKIRT = "skirts" 
+  static SHOES = "shoes" 
   static SNEAKERS = "sneakers"
-  static COAT = "coat"
+  static COAT = "coats"
   static JACKETS = "jackets"
-  static HOODIE = "hoodie"
-  static SWEATER = "sweater"
+  static HOODIE = "hoodies"
+  static SWEATER = "sweaters"
   static SHORTS = "shorts"
-  static SWIMWEAR = "swimwear"
   static PANTS = "pants"
 }
 

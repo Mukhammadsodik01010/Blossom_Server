@@ -64,6 +64,7 @@ User_Router.post("/edit-me", AuthMiddleware, UserController.EditMe);
 
 User_Router.get(
   "/user-by-id/:id",
+  AuthMiddleware,
   UserValidator.GetUserById(),
   expressValidator,
   UserController.GetUserById
@@ -96,5 +97,7 @@ User_Router.delete(
   RoleMiddleware(PositionNames.DELETE_USER_DATA),
   UserController.DeleteUserByID
 );
+
+User_Router.patch("/edit-user-status/:id", AuthMiddleware, RoleMiddleware(PositionNames.EDIT_USER_DATA), UserController.EditUserStatus)
 
 module.exports = User_Router;

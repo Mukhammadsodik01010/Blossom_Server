@@ -5,7 +5,7 @@ const { genSalt, hash, compare } = require("bcryptjs");
 const {
   RoleNames,
   PositionNames,
-  EmailStatus,
+  StatusNames,
 } = require("../../utils/constants");
 const jwt = require("jsonwebtoken");
 const { JWT_SECRET, REG_KEY } = require("../../utils/secrets");
@@ -118,6 +118,9 @@ class UserController {
     if (!existingUser) {
       throw new HttpException(StatusCodes.CONFLICT, "Wrong email or password");
     }
+    if (existingUser.status === StatusNames.BLOCKED) {
+      throw new HttpException(StatusCodes.CONFLICT, "User is blocked");
+    }
 
     const isMatch = await compare(password, existingUser.password);
     if (!isMatch) {
@@ -137,9 +140,9 @@ class UserController {
   };
 
   static GetMe = async (req, res) => {
-    const user = await UserModel.findById(req.user.user_id).select(
-      "-password -session_token"
-    );
+    const user = await UserModel.findById(req.user.user_id)
+      .select("-password -session_token")
+      .populate("products");
 
     if (!user) {
       throw new HttpException(StatusCodes.NOT_FOUND, "User not found");
@@ -308,9 +311,9 @@ class UserController {
   static GetUserById = async (req, res) => {
     const { id } = req.params;
 
-    const user = await UserModel.findById(id).select(
-      "-password -session_token"
-    );
+    const user = await UserModel.findById(id)
+      .select("-password -session_token")
+      .populate("products");
     if (!user) {
       throw new HttpException(StatusCodes.CONFLICT, "User not available");
     }
@@ -398,21 +401,23 @@ class UserController {
 
   static EditUsersByID = async (req, res) => {
     const { id } = req.params;
-    const { firstName, lastName, email } = req.body;
+    const { email, position } = req.body;
 
     const user = await UserModel.findById({
       _id: id,
       role: { $ne: RoleNames.SUPERADMIN },
-    }).select("-password -session_token");
+    });
     if (!user) {
       throw new HttpException(StatusCodes.CONFLICT, "User not found");
     }
 
-    if (firstName) user.firstName = firstName;
-    if (lastName) user.lastName = lastName;
-    if (email) {
+    if (email && email !== user.email) {
       user.email = email;
       user.email_verified = false;
+    }
+
+    if (Array.isArray(position)) {
+      user.positions = position;
     }
 
     await user.save();
@@ -433,6 +438,26 @@ class UserController {
     return res
       .status(StatusCodes.OK)
       .json({ success: true, message: "User deleted successfully" });
+  };
+
+  static EditUserStatus = async (req, res) => {
+    const { id } = req.params;
+
+    const user = await UserModel.findOne({ _id: id });
+    if (!user) {
+      throw new HttpException(StatusCodes.NOT_FOUND, "User not found");
+    }
+
+    user.status =
+      user.status === StatusNames.ACTIVE
+        ? StatusNames.BLOCKED
+        : StatusNames.ACTIVE;
+    await user.save();
+
+    return res.status(200).json({
+      success: true,
+      message: "User status updated",
+    });
   };
 }
 
